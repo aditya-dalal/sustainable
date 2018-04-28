@@ -1,4 +1,4 @@
-package solution.sustainable.models;
+package solution.sustainable.exceptions;
 
 import lombok.Getter;
 
@@ -14,5 +14,9 @@ public class Error {
     public Error(int status, String message) {
         this.status = status;
         this.message = message;
+    }
+
+    public static Error newError(InvalidRequestException e) {
+        return new Error(e.getStatus(), e.getMessage());
     }
 }

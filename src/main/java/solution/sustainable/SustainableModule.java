@@ -9,10 +9,7 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import solution.sustainable.config.SustainableConfiguration;
 import solution.sustainable.dao.*;
-import solution.sustainable.services.DeviceService;
-import solution.sustainable.services.DeviceServiceImpl;
-import solution.sustainable.services.GoalService;
-import solution.sustainable.services.GoalServiceImpl;
+import solution.sustainable.services.*;
 
 /**
  * Created by aditya.dalal on 25/04/18.
@@ -28,6 +25,7 @@ public class SustainableModule extends AbstractModule {
         bind(GoalRepository.class).to(GoalRepositoryImpl.class);
         bind(DeviceService.class).to(DeviceServiceImpl.class);
         bind(GoalService.class).to(GoalServiceImpl.class);
+        bind(EnergyService.class).to(EnergyServiceImpl.class);
     }
 
     @Singleton

@@ -14,5 +14,4 @@ public interface DeviceService {
     List<Goal> getGoals(String deviceId) throws InvalidRequestException;
     Goal addGoal(String deviceId, Goal goal) throws InvalidRequestException;
     TrackEnergy addConsumption(String deviceId, Consumption consumption) throws InvalidRequestException;
-    Device getDeviceById(String deviceId) throws InvalidRequestException;
 }

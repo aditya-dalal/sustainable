@@ -27,10 +27,9 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public Device register(Device device) throws InvalidRequestException {
-        if(device.getId() == null)
-            throw new InvalidRequestException(400, "Missing required field: id");
-        Energy energy = energyRepository.findById(new ObjectId(device.getEnergyId()));
-        if(energy == null)
+        if(deviceRepository.findById(device.getId()) != null)
+            throw new InvalidRequestException(400, "DeviceId already exists: " + device.getId());
+        if(energyRepository.findById(new ObjectId(device.getEnergyId())) == null)
             throw new InvalidRequestException(404, "Not found energyId: " + device.getEnergyId());
         return deviceRepository.insert(device);
     }
@@ -49,8 +48,6 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public Goal addGoal(String deviceId, Goal goal) throws InvalidRequestException {
-        if(goal.getTarget() == null || goal.getType() == null)
-            throw new InvalidRequestException(400, "Missing required field/s: deviceId|type|target");
         getDeviceById(deviceId);
         getGoalType(goal.getType());
         goal.setStatus("Active");
@@ -66,8 +63,7 @@ public class DeviceServiceImpl implements DeviceService {
         return trackEnergyRepository.insert(consumption);
     }
 
-    @Override
-    public Device getDeviceById(String deviceId) throws InvalidRequestException {
+    private Device getDeviceById(String deviceId) throws InvalidRequestException {
         Device device = deviceRepository.findById(deviceId);
         if(device == null)
             throw new InvalidRequestException(404, "Not found deviceId: " + deviceId);

@@ -15,12 +15,8 @@ public class DeviceRepositoryImpl implements DeviceRepository {
 
     @Override
     public Device insert(Device device) {
-        Device dbDevice = findById(device.getId());
-        if(dbDevice == null) {
-            datastore.save(device);
-            return device;
-        }
-        return dbDevice;
+        datastore.save(device);
+        return device;
     }
 
     @Override

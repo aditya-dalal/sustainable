@@ -16,18 +16,14 @@ public class EnergyRepositoryImpl implements EnergyRepository {
 
     @Override
     public Energy find(Energy energy) {
-        Query<Energy> query = datastore.createQuery(Energy.class).field("name").equal(energy.getName());
-        return query.get();
+        return datastore.find(Energy.class).field("name").equal(energy.getName())
+                .field("type").equal(energy.getType()).get();
     }
 
     @Override
     public Energy insert(Energy energy) {
-        Energy dbEnergy = find(energy);
-        if(dbEnergy == null) {
-            datastore.save(energy);
-            return energy;
-        }
-        return dbEnergy;
+        datastore.save(energy);
+        return energy;
     }
 
     @Override
