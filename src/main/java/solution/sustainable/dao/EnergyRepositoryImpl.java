@@ -3,7 +3,6 @@ package solution.sustainable.dao;
 import com.google.inject.Inject;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Query;
 import solution.sustainable.models.Energy;
 
 /**

@@ -6,21 +6,17 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
-import java.util.List;
-
 /**
- * Created by aditya.dalal on 25/04/18.
+ * Created by aditya.dalal on 28/04/18.
  */
 
-@Entity(value = "homes", noClassnameStored = true)
+@Entity(value = "badges", noClassnameStored = true)
 @Getter
 @Setter
-public class Home {
+public class Badge {
     @Id
     private ObjectId id;
-    private Owner owner;
-    private Address address;
-    private List<String> devices;
+    private String name;
 
     public String getId() {
         return id.toString();

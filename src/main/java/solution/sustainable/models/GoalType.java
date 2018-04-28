@@ -6,8 +6,6 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
-import java.util.List;
-
 /**
  * Created by aditya.dalal on 26/04/18.
  */

@@ -1,7 +1,6 @@
 package solution.sustainable.controllers;
 
 import com.google.inject.Inject;
-import solution.sustainable.dao.EnergyRepository;
 import solution.sustainable.exceptions.Error;
 import solution.sustainable.exceptions.InvalidRequestException;
 import solution.sustainable.models.Energy;

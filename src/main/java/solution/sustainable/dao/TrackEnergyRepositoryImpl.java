@@ -2,7 +2,6 @@ package solution.sustainable.dao;
 
 import com.google.inject.Inject;
 import org.mongodb.morphia.Datastore;
-import solution.sustainable.models.Consumption;
 import solution.sustainable.models.TrackEnergy;
 
 /**

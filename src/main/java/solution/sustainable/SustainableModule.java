@@ -18,7 +18,7 @@ public class SustainableModule extends AbstractModule {
 
     @Override
     public void configure() {
-        bind(HomeRepository.class).to(HomeRepositoryImpl.class);
+        bind(OwnerRepository.class).to(OwnerRepositoryImpl.class);
         bind(DeviceRepository.class).to(DeviceRepositoryImpl.class);
         bind(EnergyRepository.class).to(EnergyRepositoryImpl.class);
         bind(TrackEnergyRepository.class).to(TrackEnergyRepositoryImpl.class);
@@ -26,6 +26,9 @@ public class SustainableModule extends AbstractModule {
         bind(DeviceService.class).to(DeviceServiceImpl.class);
         bind(GoalService.class).to(GoalServiceImpl.class);
         bind(EnergyService.class).to(EnergyServiceImpl.class);
+        bind(OwnerService.class).to(OwnerServiceImpl.class);
+        bind(BadgeRepository.class).to(BadgeRepositoryImpl.class);
+        bind(BadgeService.class).to(BadgeServiceImpl.class);
     }
 
     @Singleton
