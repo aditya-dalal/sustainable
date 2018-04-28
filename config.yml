@@ -1,0 +1,15 @@
+mongo:
+  servers:
+    - localhost:27017
+  database: sustainable
+  username:
+  password:
+
+server:
+  maxThreads: 30
+  applicationConnectors:
+    - type: http
+      port: 7575
+  adminConnectors:
+    - type: http
+      port: 7576
