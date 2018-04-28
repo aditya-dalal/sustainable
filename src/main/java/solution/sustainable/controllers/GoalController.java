@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import solution.sustainable.exceptions.Error;
 import solution.sustainable.exceptions.InvalidRequestException;
 import solution.sustainable.models.Goal;
+import solution.sustainable.models.GoalSavings;
 import solution.sustainable.models.GoalTemplate;
 import solution.sustainable.models.GoalType;
 import solution.sustainable.services.GoalService;
@@ -23,53 +24,7 @@ public class GoalController {
     @Inject
     private GoalService goalService;
 
-    @Path("/templates")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public GoalTemplate addGoalTemplate(GoalTemplate goalTemplate) {
-        return goalService.addGoalTemplate(goalTemplate);
-    }
-
-    @Path("/templates")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<GoalTemplate> getGoalsForEnergyType(@QueryParam("energyType") String energyType) {
-        return goalService.getGoalsForEnergyType(energyType);
-    }
-
-    @Path("/types")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public GoalType addGoalType(GoalType goalType) {
-        return goalService.addGoalType(goalType);
-    }
-
-    @Path("/types")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<GoalType> getGoalTypes() {
-        return goalService.getGoalTypes();
-    }
-
-    @Path("/suggest")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response suggestGoals(@QueryParam("deviceId") String deviceId) {
-        List<GoalTemplate> goalTemplates = null;
-        try {
-            goalTemplates = goalService.suggestGoals(deviceId);
-        } catch (InvalidRequestException e) {
-            return Response.status(e.getStatus()).entity(Error.newError(e)).build();
-        }
-        return Response.ok().entity(goalTemplates).build();
-    }
-
-    @Path("/goals")
+    @Path("/")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -84,7 +39,7 @@ public class GoalController {
         return Response.ok().entity(result).build();
     }
 
-    @Path("/goals")
+    @Path("/")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -96,6 +51,64 @@ public class GoalController {
             return Response.status(e.getStatus()).entity(Error.newError(e)).build();
         }
         return Response.ok().entity(goals).build();
+    }
+
+    @Path("/suggest")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response suggestGoals(@QueryParam("deviceId") String deviceId) {
+        List<GoalSavings> goalSavings = null;
+        try {
+            goalSavings = goalService.suggestGoals(deviceId);
+        } catch (InvalidRequestException e) {
+            return Response.status(e.getStatus()).entity(Error.newError(e)).build();
+        }
+        return Response.ok().entity(goalSavings).build();
+    }
+
+    @Path("/templates")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addGoalTemplate(GoalTemplate goalTemplate) {
+        GoalTemplate result = null;
+        try {
+            result = goalService.addGoalTemplate(goalTemplate);
+        } catch (InvalidRequestException e) {
+            return Response.status(e.getStatus()).entity(Error.newError(e)).build();
+        }
+        return Response.status(201).entity(result).build();
+    }
+
+    @Path("/templates")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<GoalTemplate> getGoalsForEnergyType(@QueryParam("energyType") String energyType) {
+        return goalService.getGoalsForEnergyType(energyType);
+    }
+
+    @Path("/types")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addGoalType(GoalType goalType) {
+        GoalType result = null;
+        try {
+            result = goalService.addGoalType(goalType);
+        } catch (InvalidRequestException e) {
+            return Response.status(e.getStatus()).entity(Error.newError(e)).build();
+        }
+        return Response.status(201).entity(result).build();
+    }
+
+    @Path("/types")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<GoalType> getGoalTypes() {
+        return goalService.getGoalTypes();
     }
 
     private void validateGoal(Goal goal) throws InvalidRequestException {

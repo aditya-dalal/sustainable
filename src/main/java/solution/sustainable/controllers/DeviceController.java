@@ -5,7 +5,6 @@ import solution.sustainable.exceptions.Error;
 import solution.sustainable.exceptions.InvalidRequestException;
 import solution.sustainable.models.Consumption;
 import solution.sustainable.models.Device;
-import solution.sustainable.models.Goal;
 import solution.sustainable.models.TrackEnergy;
 import solution.sustainable.services.DeviceService;
 
@@ -28,10 +27,9 @@ public class DeviceController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response register(Device device) {
-        if(device.getId() == null)
-            return Response.status(400).entity(new Error(400, "Missing required field: id")).build();
         Device result = null;
         try {
+            validateDevice(device);
             result = deviceService.register(device);
         } catch (InvalidRequestException e) {
             return Response.status(e.getStatus()).entity(Error.newError(e)).build();
@@ -47,11 +45,26 @@ public class DeviceController {
     public Response addConsumption(@PathParam("deviceId") String deviceId, Consumption consumption) {
         TrackEnergy result = null;
         try {
+            validateConsumption(consumption);
             result = deviceService.addConsumption(deviceId, consumption);
         } catch (InvalidRequestException e) {
             return Response.status(e.getStatus()).entity(Error.newError(e)).build();
         }
         return Response.status(201).entity(result).build();
+    }
+
+    private void validateConsumption(Consumption consumption) throws InvalidRequestException {
+        if(consumption.getValue() == null || consumption.getValue() < 0)
+            throw new InvalidRequestException(400, "Value cannot be null/negative");
+    }
+
+    private void validateDevice(Device device) throws InvalidRequestException {
+        if (device.getId() == null || device.getId().trim().equals(""))
+            throw new InvalidRequestException(400, "DeviceId cannot be null/empty");
+        if (device.getName() == null || device.getName().trim().equals(""))
+            throw new InvalidRequestException(400, "Device name cannot be null/empty");
+        if (device.getEnergyId() == null || device.getEnergyId().trim().equals(""))
+            throw new InvalidRequestException(400, "EnergyId cannot be null/empty");
     }
 
 }

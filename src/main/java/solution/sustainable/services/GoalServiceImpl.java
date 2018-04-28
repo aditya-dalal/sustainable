@@ -8,6 +8,7 @@ import solution.sustainable.dao.GoalRepository;
 import solution.sustainable.exceptions.InvalidRequestException;
 import solution.sustainable.models.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,33 +24,6 @@ public class GoalServiceImpl implements GoalService {
     private DeviceRepository deviceRepository;
 
     @Override
-    public GoalTemplate addGoalTemplate(GoalTemplate goalTemplate) {
-        return goalRepository.insert(goalTemplate);
-    }
-
-    @Override
-    public List<GoalTemplate> getGoalsForEnergyType(String energyType) {
-        return goalRepository.findByEnergyType(energyType);
-    }
-
-    @Override
-    public GoalType addGoalType(GoalType goalType) {
-        return goalRepository.insert(goalType);
-    }
-
-    @Override
-    public List<GoalType> getGoalTypes() {
-        return goalRepository.findGoalTypes();
-    }
-
-    @Override
-    public List<GoalTemplate> suggestGoals(String deviceId) throws InvalidRequestException {
-        Energy energy = energyRepository.findById(new ObjectId(getDeviceById(deviceId).getEnergyId()));
-        System.out.println(energy.getId());
-        return goalRepository.findByEnergyType(energy.getType());
-    }
-
-    @Override
     public List<Goal> getGoals(String deviceId) throws InvalidRequestException {
         return goalRepository.findGoalsForDevice(deviceId);
     }
@@ -60,7 +34,41 @@ public class GoalServiceImpl implements GoalService {
         getGoalType(goal.getType());
         goal.setStatus("Active");
         goal.setDeviceId(deviceId);
-        return deviceRepository.addGoalForDevice(deviceId, goal);
+        if(goalRepository.find(goal) != null)
+            throw new InvalidRequestException(409, "Goal already exists");
+        return goalRepository.insert(goal);
+    }
+
+    @Override
+    public List<GoalSavings> suggestGoals(String deviceId) throws InvalidRequestException {
+        Device device = getDeviceById(deviceId);
+        Energy energy = energyRepository.findById(new ObjectId(device.getEnergyId()));
+        List<GoalTemplate> goals = goalRepository.findByEnergyType(energy.getType());
+        return getGoalsWithSavings(goals, energy);
+    }
+
+    @Override
+    public GoalTemplate addGoalTemplate(GoalTemplate goalTemplate) throws InvalidRequestException {
+        if(goalRepository.find(goalTemplate) != null)
+            throw new InvalidRequestException(409, "Goal template already exists");
+        return goalRepository.insert(goalTemplate);
+    }
+
+    @Override
+    public List<GoalTemplate> getGoalsForEnergyType(String energyType) {
+        return goalRepository.findByEnergyType(energyType);
+    }
+
+    @Override
+    public GoalType addGoalType(GoalType goalType) throws InvalidRequestException {
+        if(goalRepository.find(goalType) != null)
+            throw new InvalidRequestException(409, "GoalType already exists");
+        return goalRepository.insert(goalType);
+    }
+
+    @Override
+    public List<GoalType> getGoalTypes() {
+        return goalRepository.findGoalTypes();
     }
 
     private Device getDeviceById(String deviceId) throws InvalidRequestException {
@@ -75,5 +83,32 @@ public class GoalServiceImpl implements GoalService {
         if(result == null)
             throw new InvalidRequestException(404, "Not found goal type: " + goalType);
         return result;
+    }
+
+    private List<GoalSavings> getGoalsWithSavings(List<GoalTemplate> goals, Energy energy) {
+        List<GoalSavings> result = new ArrayList<>();
+        for (GoalTemplate goal: goals) {
+            if(goal.getType().equals("Use Alternate")) {
+                Energy goalEnergy = energyRepository.findByName(goal.getTarget());
+                result.add(goalSavings(goal, energy.getCost() - goalEnergy.getCost()));
+            }
+            else if(goal.getType().equals("Reduce By")) {
+                Double savings = energy.getCost() * (Double.parseDouble(goal.getTarget())/100);
+                result.add(goalSavings(goal, savings));
+            }
+            else if(goal.getType().equals("Switch To")) {
+                result.add(goalSavings(goal, 0.0));
+            }
+        }
+        return result;
+    }
+
+    private GoalSavings goalSavings(GoalTemplate goal, Double saving) {
+        GoalSavings goalSavings = new GoalSavings();
+        goalSavings.setEnergyType(goal.getEnergyType());
+        goalSavings.setSavingsPerUnit(saving);
+        goalSavings.setTarget(goal.getTarget());
+        goalSavings.setGoalType(goal.getType());
+        return goalSavings;
     }
 }

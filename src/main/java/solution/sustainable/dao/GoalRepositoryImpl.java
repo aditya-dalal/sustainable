@@ -18,6 +18,18 @@ public class GoalRepositoryImpl implements GoalRepository {
     private Datastore datastore;
 
     @Override
+    public Goal insert(Goal goal) {
+        datastore.save(goal);
+        return goal;
+    }
+
+    @Override
+    public Goal find(Goal goal) {
+        return datastore.find(Goal.class).field("deviceId").equal(goal.getDeviceId()).field("type").equal(goal.getType())
+                .field("target").equal(goal.getTarget()).field("status").notEqual(goal.getStatus()).get();
+    }
+
+    @Override
     public GoalTemplate insert(GoalTemplate goalTemplate) {
         GoalTemplate dbGoalTemplate = find(goalTemplate);
         if(dbGoalTemplate == null) {
@@ -47,12 +59,13 @@ public class GoalRepositoryImpl implements GoalRepository {
 
     @Override
     public GoalType insert(GoalType goalType) {
-        GoalType dbGoalType = datastore.find(GoalType.class).field("type").equal(goalType.getType()).get();
-        if(dbGoalType == null) {
-            datastore.save(goalType);
-            return goalType;
-        }
-        return dbGoalType;
+        datastore.save(goalType);
+        return goalType;
+    }
+
+    @Override
+    public GoalType find(GoalType goalType) {
+        return datastore.find(GoalType.class).field("type").equal(goalType.getType()).get();
     }
 
     @Override

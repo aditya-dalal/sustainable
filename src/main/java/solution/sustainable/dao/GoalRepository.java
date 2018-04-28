@@ -10,11 +10,14 @@ import java.util.List;
  * Created by aditya.dalal on 26/04/18.
  */
 public interface GoalRepository {
+    Goal insert(Goal goal);
+    Goal find(Goal goal);
     GoalTemplate insert(GoalTemplate goalTemplate);
     GoalTemplate find(GoalTemplate goalTemplate);
     List<GoalTemplate> findByEnergyType(String energyType);
     List<Goal> findGoalsForDevice(String deviceId);
     GoalType insert(GoalType goalType);
+    GoalType find(GoalType goalType);
     GoalType findGoalType(String goalType);
     List<GoalType> findGoalTypes();
 }

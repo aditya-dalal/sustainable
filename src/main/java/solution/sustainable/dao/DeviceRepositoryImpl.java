@@ -24,15 +24,4 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         return datastore.find(Device.class).field("_id").equal(id).get();
     }
 
-    @Override
-    public Goal addGoalForDevice(String id, Goal goal) {
-        Goal dbGoal = datastore.find(Goal.class).field("deviceId").equal(id).field("type").equal(goal.getType())
-                .field("target").equal(goal.getTarget()).field("status").notEqual(goal.getStatus()).get();
-        if(dbGoal == null) {
-            datastore.save(goal);
-            return goal;
-        }
-        return dbGoal;
-    }
-
 }

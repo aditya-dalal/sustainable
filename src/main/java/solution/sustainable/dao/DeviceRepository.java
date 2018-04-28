@@ -9,5 +9,4 @@ import solution.sustainable.models.Goal;
 public interface DeviceRepository {
     Device insert(Device device);
     Device findById(String id);
-    Goal addGoalForDevice(String id, Goal goal);
 }

@@ -29,4 +29,9 @@ public class EnergyRepositoryImpl implements EnergyRepository {
     public Energy findById(ObjectId id) {
         return datastore.find(Energy.class).field("_id").equal(id).get();
     }
+
+    @Override
+    public Energy findByName(String name) {
+        return datastore.find(Energy.class).field("name").equal(name).get();
+    }
 }

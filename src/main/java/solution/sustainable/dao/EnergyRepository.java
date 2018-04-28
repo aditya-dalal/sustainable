@@ -10,4 +10,5 @@ public interface EnergyRepository {
     Energy find(Energy energy);
     Energy insert(Energy energy);
     Energy findById(ObjectId id);
+    Energy findByName(String name);
 }
