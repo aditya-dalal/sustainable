@@ -1,17 +1,14 @@
 package solution.sustainable.services;
 
 import solution.sustainable.exceptions.InvalidRequestException;
-import solution.sustainable.models.*;
-
-import java.util.List;
+import solution.sustainable.models.Consumption;
+import solution.sustainable.models.Device;
+import solution.sustainable.models.TrackEnergy;
 
 /**
  * Created by aditya.dalal on 26/04/18.
  */
 public interface DeviceService {
     Device register(Device device) throws InvalidRequestException;
-    List<GoalTemplate> suggestGoals(String deviceId) throws InvalidRequestException;
-    List<Goal> getGoals(String deviceId) throws InvalidRequestException;
-    Goal addGoal(String deviceId, Goal goal) throws InvalidRequestException;
     TrackEnergy addConsumption(String deviceId, Consumption consumption) throws InvalidRequestException;
 }
