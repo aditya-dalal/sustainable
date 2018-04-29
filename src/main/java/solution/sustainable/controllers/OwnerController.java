@@ -3,6 +3,7 @@ package solution.sustainable.controllers;
 import com.google.inject.Inject;
 import solution.sustainable.exceptions.Error;
 import solution.sustainable.exceptions.InvalidRequestException;
+import solution.sustainable.models.Data;
 import solution.sustainable.models.Owner;
 import solution.sustainable.services.OwnerService;
 
@@ -35,14 +36,14 @@ public class OwnerController {
         return Response.status(201).entity(result).build();
     }
 
-    @Path("/{ownerId}/devices/{deviceId}")
+    @Path("/{ownerId}/devices")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerDevice(@PathParam("ownerId") String ownerId, @PathParam("deviceId") String deviceId) {
+    public Response registerDevice(@PathParam("ownerId") String ownerId, Data data) {
         boolean result;
         try {
-            result = ownerService.addDevice(ownerId, deviceId);
+            result = ownerService.addDevice(ownerId, data.getId());
         } catch (InvalidRequestException e) {
             return Response.status(e.getStatus()).entity(Error.newError(e)).build();
         }
@@ -51,14 +52,14 @@ public class OwnerController {
         return Response.status(500).entity(new Error(500, "Failed to add device")).build();
     }
 
-    @Path("/{ownerId}/badges/{badgeId}")
+    @Path("/{ownerId}/badges")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addBadge(@PathParam("ownerId") String ownerId, @PathParam("badgeId") String badgeId) {
+    public Response addBadge(@PathParam("ownerId") String ownerId, Data data) {
         boolean result;
         try {
-            result = ownerService.addBadge(ownerId, badgeId);
+            result = ownerService.addBadge(ownerId, data.getId());
         } catch (InvalidRequestException e) {
             return Response.status(e.getStatus()).entity(Error.newError(e)).build();
         }
